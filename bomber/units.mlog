@@ -1,0 +1,8 @@
+# linked to arc, cell
+read i cell1 0
+lookup unit u i
+ubind u
+sensor x arc1 @shootX
+sensor y arc1 @shootY
+ucontrol move x y 0 0 0
+ucontrol targetp @unit 3 10 0 0

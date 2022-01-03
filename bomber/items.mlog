@@ -1,0 +1,14 @@
+# linked to arc, cell, sorter
+start:
+    read i cell1 0
+    lookup unit u i
+    ubind u
+    sensor items @unit @totalItems
+    sensor cap @unit @itemCapacity
+jump start greaterThanEq items cap
+    ulocate building core 0 @copper x y 0 core
+    sensor conf sorter1 @config
+    ucontrol itemTake core conf 100 0 0
+    sensor c arc1 @controlled
+jump start notEqual c 0
+    ucontrol approach x y 3 0 0

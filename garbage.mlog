@@ -1,0 +1,31 @@
+# unflaggs unused flares - original by Nester
+# linked to message for status
+set uIndex 0
+lookup unit uType uIndex
+set uX null
+ubind uType
+sensor uXHP uX @health
+jump 10 greaterThan uXHP 0
+jump 8 notEqual @unit null
+jump 27 always x false
+set uX @unit
+jump 3 always 0 0
+sensor uControlled @unit @controlled
+jump 18 equal uControlled true
+sensor uCommanded @unit @commanded
+jump 18 equal uCommanded true
+sensor uFlag @unit @flag
+jump 18 equal uFlag 0
+ucontrol flag 0 0 0 0 0
+op add flagsRemoved flagsRemoved 1
+jump 3 notEqual @unit uX
+jump 26 equal flagsRemoved 0
+print "[brick]Flag garbage collector:\n\n"
+print flagsRemoved
+print " [lightgray]unused "
+print uType
+print " had their flag removed."
+printflush message1
+set flagsRemoved 0
+op add uIndex uIndex 1
+jump 1 notEqual uType null

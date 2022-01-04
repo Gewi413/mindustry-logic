@@ -1,0 +1,36 @@
+# counts all unit and how many unflagged there are
+# linked to message for output
+start:
+    set i 0
+    printflush message1
+    print "[green]ucounter by gewi[white]\n"
+    print "type: total (unflagged)"
+    loop:
+       lookup unit u i
+       jump start equal u null
+       ubind u
+       set f @unit
+       set c 0
+       set n 0
+       jump inc equal @unit null
+       unit:
+           ubind u
+           op add c c 1
+           sensor m @unit @flag
+           jump inc greaterThanEq c 1000
+           jump flag notEqual m 0
+               op add n n 1
+	   flag:
+           jump unit notEqual @unit f
+       jump inc equal c 1
+       print "\n"
+       print u
+       print ": "
+       print c
+       print " ("
+       print n
+       print ")"
+    inc:
+    op add i i 1
+    jump loop always x false
+

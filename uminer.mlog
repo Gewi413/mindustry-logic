@@ -1,0 +1,19 @@
+# lets units (poly in this case) mine a selected ore
+# linked to sorter for selection
+start:
+    sensor conf sorter1 @config
+jump start equal conf null
+ubind @poly
+ucontrol boost 1 0 0 0 0
+ulocate building core 0 @copper x y 0 b
+sensor c @unit conf
+sensor t @unit @totalItems
+sensor a @unit @itemCapacity
+jump drop notEqual c t
+jump drop equal c a
+    ulocate ore core 0 conf x y 0 0
+    ucontrol mine x y 0 0 0
+drop:
+ucontrol approach x y 3 0 0
+ucontrol itemDrop b 100 0 0 0
+

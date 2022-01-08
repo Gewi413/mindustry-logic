@@ -1,6 +1,8 @@
 # sends phase into an overdrive when there is more than 100 in core but no dome in range
-# linked to projector, probe points that need to be under dome to disable
+# linked to projector/dome, probe points that need to be under dome to disable
+# can also be linked to a dome to supply it instead of the projector
 setup:
+jump dome_setup notEqual dome1 null
 jump setup equal projector1 null
 sensor x projector1 @x
 sensor y projector1 @y
@@ -8,25 +10,26 @@ op mul f @thisy @mapw
 op add f f @thisx
 
 start:
+jump dome_setup notEqual dome1 null
 sensor ts @this @timescale
 op equal enable ts 2.5
 sensor ts @this @timescale
 op equal boosted ts 2.5
 op or enable enable boosted
-jump skip_loop equal @links 1
+jump enable equal enable 0
+jump disable equal @links 1
 
 set i 1
 loop:
     getlink a i
     sensor ts a @timescale
-    op equal boosted ts 2.5
-    op land enable enable boosted
-    jump enable notEqual enable 1
+    jump enable notEqual ts 2.5
     op add i i 1
     jump loop lessThan i @links
 
-skip_loop:
-jump enable equal enable 0
+disable:
+    ucontrol flag 0
+    ubind 0
     control enabled projector1 0
     jump start always
 enable:
@@ -40,7 +43,7 @@ new_flare:
     ubind @flare
     sensor ff @unit @flag
     jump new_flare notEqual ff 0
-ucontrol flag f 0
+ucontrol flag f
 
 keep_flare:
 sensor fi @unit @firstItem
@@ -59,4 +62,45 @@ drop:
     ucontrol move x y
     ucontrol itemDrop projector1 100
 jump start always
+
+dome_setup:
+sensor x dome1 @x
+sensor y dome1 @y
+op mul f @thisy @mapw
+op add f f @thisx
+dome:
+control enabled projector1 0
+sensor h @unit @health
+jump new_flare_dome lessThan h 0
+    sensor tf @unit @flag
+    jump keep_flare_dome equal tf f
+new_flare_dome:
+    ubind @flare
+    sensor ff @unit @flag
+    jump new_flare_dome notEqual ff 0
+ucontrol flag f
+
+keep_flare_dome:
+sensor fi @unit @firstItem
+sensor sili dome1 @silicon
+sensor phase dome1 @phase-fabric
+jump phase lessThan phase sili
+    set needed @silicon
+    jump continue always
+phase:
+    set needed @phase-fabric
+continue:
+jump drop_dome equal fi needed
+ulocate building core 0 @copper cx cy 0 b
+ucontrol move cx cy
+ucontrol itemDrop b 100
+jump skip_drop_dome equal fi null
+    ucontrol itemDrop @air 100
+skip_drop_dome:
+ucontrol itemTake b needed 10
+jump dome always
+drop_dome:
+    ucontrol move x y
+    ucontrol itemDrop dome1 100
+jump dome always
 set Author "Gewi"

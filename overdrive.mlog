@@ -15,8 +15,6 @@ start:
 jump dome_setup notEqual dome1 null
 jump setup equal projector1 null
 jump multiple_overdrives notEqual projector2 null
-sensor switched switch1 @enabled
-jump disable_logic strictEqual switched 0
 jump continue_logic always
 disable_logic:
 print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\n[purple] Disabled by []"
@@ -51,10 +49,13 @@ disable:
     jump start always
 enable:
 control enabled projector1 1
+sensor switched switch1 @enabled
+jump disable_logic strictEqual switched 0
 sensor h @unit @health
 jump new_flare lessThan h 0
     sensor tf @unit @flag
     jump keep_flare equal tf f
+    jump keep_flare strictEqual tf 0
 new_flare:
 print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nNo  bound, getting new one"
 printflush message1
@@ -62,9 +63,9 @@ new_flare_loop:
     ubind @flare
     sensor ff @unit @flag
     jump new_flare_loop notEqual ff 0
-ucontrol flag f
 
 keep_flare:
+ucontrol flag f
 sensor fi @unit @firstItem
 jump drop equal fi @phase-fabric
 ulocate building core 0 @copper cx cy 0 b
@@ -126,6 +127,7 @@ sensor h @unit @health
 jump new_flare_dome lessThan h 0
     sensor tf @unit @flag
     jump keep_flare_dome equal tf f
+    jump keep_flare_dome strictEqual tf 0
 new_flare_dome:
 print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDetected \nNo  bound, getting new one"
 printflush message1
@@ -133,9 +135,9 @@ new_flare_dome_loop:
     ubind @flare
     sensor ff @unit @flag
     jump new_flare_dome_loop notEqual ff 0
-ucontrol flag f
 
 keep_flare_dome:
+ucontrol flag f
 sensor fi @unit @firstItem
 sensor sili dome1 @silicon
 sensor phase dome1 @phase-fabric

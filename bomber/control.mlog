@@ -27,8 +27,8 @@ sensor s sorter1 @config
 save:
     write c cell1 0
 sensor p arc1 @controlled
-control enabled processor1 p 0 0 0
-control enabled arc1 0 0 0 0
+control enabled processor1 p
+control enabled arc1 0
 set i 1
 sensor ts @this @timescale
 op equal enable ts 2.5
@@ -43,16 +43,17 @@ sensor:
     op add i i 1
     jump sensor lessThan i @links
 jump enable equal enable 0
-    control enabled projector1 0 0 0 0
+    control enabled projector1 0
     end
 enable:
-    control enabled projector1 1 0 0 0
+    control enabled projector1 1
     op mul f @thisy @mapw
     op add f f @thisx
     sensor h @unit @health
 jump new_flare lessThan h 0
     sensor tf @unit @flag
     jump keep_flare equal tf f
+    jump keep_flare strictEqual tf 0
     new_flare:
         ubind @flare
         sensor ff @unit @flag
@@ -60,17 +61,17 @@ jump new_flare lessThan h 0
         ulocate building core 0 @copper x y 0 b
         sensor amount b @phase-fabric
     jump start lessThan amount 100
-    ucontrol flag f 0 0 0 0
 keep_flare:
+    ucontrol flag f
     sensor fi @unit @firstItem
     jump drop equal fi @phase-fabric
-        ucontrol move x y 0 0 0
-        ucontrol itemDrop b 100 0 0 0
+        ucontrol move x y
+        ucontrol itemDrop b 100
         jump skip_drop equal fi null
-            ucontrol itemDrop @air 100 0 0 0
+            ucontrol itemDrop @air 100
         skip_drop:
-        ucontrol itemTake b @phase-fabric 100 0 0
+        ucontrol itemTake b @phase-fabric 100
     end
     drop:
-        ucontrol move @thisx @thisy 0 0 0
-        ucontrol itemDrop projector1 100 0 0 0
+        ucontrol move @thisx @thisy
+        ucontrol itemDrop projector1 100

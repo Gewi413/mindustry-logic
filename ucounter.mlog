@@ -33,4 +33,3 @@ start:
     inc:
     op add i i 1
     jump loop always x false
-

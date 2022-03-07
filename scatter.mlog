@@ -1,0 +1,69 @@
+# sends ammo into conveyor and aims linked scatters with a hail
+start:
+jump range_skip equal hail1 null
+    radar enemy flying any distance hail1 1 e
+    control shootp scatter1 e e 0 0
+    control shootp scatter2 e e 0 0
+    control shootp scatter3 e e 0 0
+    control shootp scatter4 e e 0 0
+    control shootp scatter5 e e 0 0
+    control shootp scatter6 e e 0 0
+    control shootp scatter7 e e 0 0
+    control shootp scatter8 e e 0 0
+range_skip:
+sensor items conveyor1 @totalItems
+jump enabled lessThanEq items 5
+    op add occurances occurances 1
+    jump start lessThan occurances 5
+    ucontrol flag 0
+    ubind null
+    set occurances 0
+    end
+enabled:
+set occurances 0
+op mul flag @thisy @mapw
+op add flag flag @thisx
+sensor f @unit @flag
+jump new_flare notEqual f flag
+sensor health @unit @health
+jump keep_flare greaterThan health 0
+new_flare:
+    op add stop @time 10000
+    new_flare_loop:
+        ubind @flare
+        sensor f @unit @flag
+        jump start greaterThanEq @time stop
+        jump new_flare_loop notEqual f 0
+    ucontrol flag flag
+keep_flare:
+sensor item @unit @firstItem
+jump drop equal item @metaglass
+jump drop equal item @lead
+jump drop equal item @scrap
+    ulocate building core 0 @copper cx cy 0 core
+    ucontrol move cx cy 0 0 0
+    jump glass equal item null
+    ucontrol itemDrop core 100 0 0 0
+    ucontrol itemDrop @air 100 0 0 0
+    glass:
+        sensor amount core @metaglass
+        jump lead lessThan amount 100
+            ucontrol itemTake core @metaglass 100 0 0
+        end
+    lead:
+        sensor amount core @lead
+        jump scrap lessThan amount 100
+            ucontrol itemTake core @lead 100 0 0
+        end
+    scrap:
+        sensor amount core @scrap
+        jump failed lessThan amount 100
+            ucontrol itemTake core @scrap 100 0 0
+    failed:
+        end
+drop:
+    ucontrol move @thisx @thisy 0 0 0
+    ucontrol itemDrop conveyor1 100 0 0 0
+end
+set Author "Gewi"
+

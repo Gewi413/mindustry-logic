@@ -1,0 +1,72 @@
+# sends phase into an overdrive when there is more than 100 in core but no dome in range
+# linked to projector, probe points that need to be under dome to disable
+# made to be put into schematic for integrated logic, makes it possible to integrate other logic easily at line 6
+setup:
+jump setup equal projector1 null
+sensor x projector1 @x
+sensor y projector1 @y
+op mul f @thisy @mapw
+op add f f @thisx
+
+start:
+jump setup equal projector1 null
+sensor ts @this @timescale
+op equal enable ts 2.5
+sensor ts @this @timescale
+op equal boosted ts 2.5
+op or enable enable boosted
+jump enable equal enable 0
+jump disable equal @links 1
+
+set i 0
+loop:
+    getlink a i
+    jump dont_check equal a projector1
+        sensor ts a @timescale
+        jump enable notEqual ts 2.5
+    dont_check:
+    op add i i 1
+    jump loop lessThan i @links
+
+disable:
+    ucontrol flag 0
+    ubind 0
+    control enabled projector1 0
+    jump start always
+enable:
+control enabled projector1 1
+sensor switched switch1 @enabled
+jump start strictEqual switched 0
+sensor h @unit @health
+jump new_flare lessThan h 0
+    sensor tf @unit @flag
+    jump keep_flare equal tf f
+    jump keep_flare strictEqual tf 0
+new_flare:
+new_flare_loop:
+    ubind @flare
+    sensor ff @unit @flag
+    jump new_flare_loop notEqual ff 0
+
+keep_flare:
+ucontrol flag f
+sensor fi @unit @firstItem
+jump drop equal fi @phase-fabric
+ulocate building core 0 @copper cx cy 0 b
+sensor amount b @phase-fabric
+jump start lessThan amount 100
+ucontrol move cx cy
+ucontrol itemDrop b 100
+jump skip_drop equal fi null
+    ucontrol itemDrop @air 100
+skip_drop:
+ucontrol itemTake b @phase-fabric 100
+jump start always
+drop:
+    ucontrol move x y
+    ucontrol itemDrop projector1 100
+jump start always
+
+set Author "Gewi"
+set Helper "SBytes"
+set Link https://github.com/Gewi413/mindustry-logic/blob/main/overdrive.mlog

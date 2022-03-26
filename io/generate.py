@@ -34,7 +34,8 @@ def main():
         icon = items[item_names.index(item)]
         sign = '' if amount < 0 else ''
         for i in range(len(modifiers)):
-            out[i] += f'\\n{sign}[white]{icon}[] {abs(amount) * modifiers[i]}'
+            actual = abs(amount) * modifiers[i]
+            out[i] += f'\\n{sign}[white]{icon}[] {actual: .2f}'
 
     template = f"""
 print "[sky]{name}[]\\n[slate]by {creator}[lightgray]\\n"

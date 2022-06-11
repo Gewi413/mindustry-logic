@@ -1,34 +1,40 @@
 # sends ammo into conveyor and aims linked scatters with a hail
+op mul flag @thisx @maph
+op add flag flag @thisy
+
 start:
+# Hail targetting
 jump range_skip equal hail1 null
     radar enemy flying any distance hail1 1 e
-    control shootp scatter1 e e 0 0
-    control shootp scatter2 e e 0 0
-    control shootp scatter3 e e 0 0
-    control shootp scatter4 e e 0 0
-    control shootp scatter5 e e 0 0
-    control shootp scatter6 e e 0 0
-    control shootp scatter7 e e 0 0
-    control shootp scatter8 e e 0 0
+    control shootp scatter1 e e
+    control shootp scatter2 e e
+    control shootp scatter3 e e
+    control shootp scatter4 e e
+    control shootp scatter5 e e
+    control shootp scatter6 e e
+    control shootp scatter7 e e
+    control shootp scatter8 e e
 range_skip:
+
+# Whether to continue filling or not
 sensor items conveyor1 @totalItems
 jump enabled lessThanEq items 5
-    op add occurances occurances 1
-    jump start lessThan occurances 5
+    jump start lessThan @time unbind_timer
     ucontrol flag 0
+    ulocate building core 0 0 cx cy 0 core
+    ucontrol approach cx cy 7.125 # send back to core
     ubind null
-    set occurances 0
     end
 enabled:
-set occurances 0
-op mul flag @thisy @mapw
-op add flag flag @thisx
+op add unbind_timer @time 3e3 # 3 seconds of waiting
+
+# Validicity check
 sensor f @unit @flag
 jump new_flare notEqual f flag
 sensor health @unit @health
 jump keep_flare greaterThan health 0
 new_flare:
-    op add stop @time 10000
+    op add stop @time 10e3
     new_flare_loop:
         ubind @flare
         sensor f @unit @flag
@@ -36,15 +42,17 @@ new_flare:
         jump new_flare_loop notEqual f 0
     ucontrol flag flag
 keep_flare:
+
+# Unit control (item take + item drop)
 sensor item @unit @firstItem
 jump drop equal item @metaglass
 jump drop equal item @lead
 jump drop equal item @scrap
-    ulocate building core 0 @copper cx cy 0 core
-    ucontrol move cx cy 0 0 0
+    ulocate building core 0 0 cx cy 0 core
+    ucontrol approach cx cy 7.125
     jump glass equal item null
-    ucontrol itemDrop core 100 0 0 0
-    ucontrol itemDrop @air 100 0 0 0
+    ucontrol itemDrop core 100
+    ucontrol itemDrop @air 100
     glass:
         sensor amount core @metaglass
         jump lead lessThan amount 100
@@ -62,8 +70,8 @@ jump drop equal item @scrap
     failed:
         end
 drop:
-    ucontrol move @thisx @thisy 0 0 0
-    ucontrol itemDrop conveyor1 100 0 0 0
+    ucontrol approach @thisx @thisy 6.125
+    ucontrol itemDrop conveyor1 100
 end
 set Author "Gewi"
 

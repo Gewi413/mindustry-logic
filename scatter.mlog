@@ -56,17 +56,17 @@ jump drop equal item @scrap
     glass:
         sensor amount core @metaglass
         jump lead lessThan amount 100
-            ucontrol itemTake core @metaglass 100 0 0
+            ucontrol itemTake core @metaglass 100
         end
     lead:
         sensor amount core @lead
         jump scrap lessThan amount 100
-            ucontrol itemTake core @lead 100 0 0
+            ucontrol itemTake core @lead 100
         end
     scrap:
         sensor amount core @scrap
         jump failed lessThan amount 100
-            ucontrol itemTake core @scrap 100 0 0
+            ucontrol itemTake core @scrap 100
     failed:
         end
 drop:

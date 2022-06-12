@@ -24,7 +24,7 @@ jump enabled lessThanEq items 5
     ulocate building core 0 0 cx cy 0 core
     ucontrol approach cx cy 7.125 # send back to core
     ubind null
-    end
+    jump start always
 enabled:
 op add unbind_timer @time 3e3 # 3 seconds of waiting
 
@@ -34,7 +34,7 @@ jump new_flare notEqual f flag
 sensor health @unit @health
 jump keep_flare greaterThan health 0
 new_flare:
-    op add stop @time 10e3
+    op add stop @time 1e3
     new_flare_loop:
         ubind @flare
         sensor f @unit @flag
@@ -57,21 +57,21 @@ jump drop equal item @scrap
         sensor amount core @metaglass
         jump lead lessThan amount 100
             ucontrol itemTake core @metaglass 100
-        end
+        jump start always
     lead:
         sensor amount core @lead
         jump scrap lessThan amount 100
             ucontrol itemTake core @lead 100
-        end
+        jump start always
     scrap:
         sensor amount core @scrap
         jump failed lessThan amount 100
             ucontrol itemTake core @scrap 100
     failed:
-        end
+        jump start always
 drop:
-    ucontrol approach @thisx @thisy 6.125
+    ucontrol approach @thisx @thisy 5.125
     ucontrol itemDrop conveyor1 100
-end
+jump start always
 set Author "Gewi"
 

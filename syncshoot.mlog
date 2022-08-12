@@ -1,8 +1,11 @@
 # make linked turrets shoot the position the player aims at if the player is shooting
+sensor @counter switch1 @enabled
 idle:
     radar player ally any distance @this 1 c
     sensor sh c @shooting
+    jump shoot notEqual switch1 null
     jump idle equal sh 0
+shoot:
 sensor x c @shootX
 sensor y c @shootY
 set i 0

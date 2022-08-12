@@ -43,9 +43,11 @@ jump new_flare lessThan h 0
     jump keep_flare equal tf f
     jump keep_flare strictEqual tf 0
 new_flare:
+op add stop @time 1e3
 new_flare_loop:
     ubind @flare
     sensor ff @unit @flag
+    jump start greaterThanEq @time stop
     jump new_flare_loop notEqual ff 0
 
 keep_flare:

@@ -11,6 +11,10 @@ op add f f @thisx
 
 start:
 jump setup equal projector1 null
+sensor selection sorter1 @config
+jump disable strictEqual selection @blast-compound
+jump enable strictEqual selection @phase-fabric
+
 sensor ts @this @timescale
 op equal enable ts 2.5
 sensor ts @this @timescale
@@ -18,11 +22,6 @@ op equal boosted ts 2.5
 op or enable enable boosted
 jump enable equal enable 0
 jump disable equal @links 1
-
-sensor selection sorter1 @config
-jump disable strictEqual selection @blast-compound
-jump enable strictEqual selection @phase-fabric
-
 set i 0
 loop:
     getlink a i
